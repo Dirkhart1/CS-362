@@ -1,1 +1,48 @@
-<RESTOCK.HTML CONTENT HERE>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restock Items</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h2>Low Stock Items</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    {% if items %}
+        <table>
+            <tr>
+                <th>Product</th>
+                <th>Quantity</th>
+                <th>Threshold</th>
+                <th>Action</th>
+            </tr>
+            {% for item in items %}
+            <tr>
+                <td>{{ item[1] }}</td>
+                <td>{{ item[2] }}</td>
+                <td>{{ item[3] }}</td>
+                <td>
+                    <form method="POST" style="margin:0;">
+                        <input type="hidden" name="item_id" value="{{ item[0] }}">
+                        <button type="submit">Restock</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    {% else %}
+        <p>No low-stock items. You're all good!</p>
+    {% endif %}
+
+    <p><a href="/inventory">Back to Inventory</a></p>
+</body>
+</html>
