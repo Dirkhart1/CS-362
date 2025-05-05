@@ -1,1 +1,52 @@
-<INVENTORY.HTML CONTENT HERE>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Your Inventory</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h2>Your Inventory</h2>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        <div class="flash">
+          {% for message in messages %}
+            <p>{{ message }}</p>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Form to add a new product -->
+    <form method="POST">
+        <input name="product_name" placeholder="Product Name" required>
+        <input name="quantity" type="number" placeholder="Quantity" required>
+        <input name="threshold" type="number" placeholder="Restock Threshold" required>
+        <button type="submit">Add Product</button>
+    </form>
+
+    <!-- Inventory Table -->
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Quantity</th>
+            <th>Threshold</th>
+            <th>Last Updated</th>
+        </tr>
+        {% for item in items %}
+        <tr>
+            <td>{{ item[1] }}</td>
+            <td>{{ item[2] }}</td>
+            <td>{{ item[3] }}</td>
+            <td>{{ item[4] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <p>
+        <a href="/upload">Upload Inventory</a> |
+        <a href="/restock">Restock</a> |
+        <a href="/logout">Logout</a>
+    </p>
+</body>
+</html>
