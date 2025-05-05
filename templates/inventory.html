@@ -5,6 +5,11 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
+    <!-- Grocery Tracker Section -->
+    <div class="grocery-tracker">
+        Grocery Tracker - Manage your shopping list!
+    </div>
+
     <h2>Your Inventory</h2>
 
     {% with messages = get_flashed_messages() %}
@@ -26,27 +31,63 @@
     </form>
 
     <!-- Inventory Table -->
-    <table>
-        <tr>
-            <th>Product</th>
-            <th>Quantity</th>
-            <th>Threshold</th>
-            <th>Last Updated</th>
-        </tr>
-        {% for item in items %}
-        <tr>
-            <td>{{ item[1] }}</td>
-            <td>{{ item[2] }}</td>
-            <td>{{ item[3] }}</td>
-            <td>{{ item[4] }}</td>
-        </tr>
-        {% endfor %}
+    <table id="inventoryTable">
+        <thead>
+            <tr>
+                <th>Product</th>
+                <th onclick="sortTable(1)">Quantity</th>
+                <th>Threshold</th>
+                <th>Last Updated</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            <tr>
+                <td>{{ item[1] }}</td>
+                <td>{{ item[2] }}</td>
+                <td>{{ item[3] }}</td>
+                <td>{{ item[4] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
     </table>
 
-    <p>
+    <!-- Link Buttons -->
+    <div class="link-buttons">
         <a href="/upload">Upload Inventory</a> |
         <a href="/restock">Restock</a> |
         <a href="/logout">Logout</a>
-    </p>
+    </div>
+
+    <script>
+        let isAscending = true;  // Track the sort order (default is ascending)
+
+        // Sort table by column
+        function sortTable(columnIndex) {
+            const table = document.getElementById("inventoryTable");
+            const rows = Array.from(table.rows).slice(1);  // Skip the header row
+            const isNumericColumn = columnIndex === 1;  // Quantity is numeric
+
+            // Sort the rows based on the column
+            rows.sort((rowA, rowB) => {
+                const cellA = rowA.cells[columnIndex].innerText;
+                const cellB = rowB.cells[columnIndex].innerText;
+
+                if (isNumericColumn) {
+                    return isAscending
+                        ? parseInt(cellA) - parseInt(cellB)  // Ascending (lowest to highest)
+                        : parseInt(cellB) - parseInt(cellA);  // Descending (highest to lowest)
+                } else {
+                    return cellA.localeCompare(cellB);  // Alphabetically (for product names)
+                }
+            });
+
+            // Reorder the rows in the table
+            rows.forEach(row => table.appendChild(row));
+
+            // Toggle the order for the next click
+            isAscending = !isAscending;
+        }
+    </script>
 </body>
 </html>
