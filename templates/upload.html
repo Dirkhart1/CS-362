@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Upload Inventory</title>
+    <title>Upload Sales File</title>
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <h2>Upload Inventory File</h2>
+    <h2>Upload Sales File</h2>
 
     {% with messages = get_flashed_messages() %}
       {% if messages %}
@@ -18,12 +18,12 @@
     {% endwith %}
 
     <form method="POST" enctype="multipart/form-data">
-        <input type="file" name="file" accept=".csv,.xlsx" required><br>
+        <input type="file" name="file" accept=".csv,.xlsx,.json" required><br>
         <button type="submit">Upload</button>
     </form>
 
-    <p>Accepted formats: <strong>.csv</strong> or <strong>.xlsx</strong><br>
-       Required columns: <code>product_name</code>, <code>quantity</code>, <code>threshold</code></p>
+    <p>Accepted formats: <strong>.csv</strong>, <strong>.xlsx</strong>, <strong>.json</strong><br>
+       Required columns: <code>productname</code>, <code>date</code>, <code>saleTotal</code></p>
 
     <p><a href="/inventory">Back to Inventory</a></p>
 </body>

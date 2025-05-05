@@ -32,6 +32,7 @@
             <th>Quantity</th>
             <th>Threshold</th>
             <th>Last Updated</th>
+            <th>Action</th>
         </tr>
         {% for item in items %}
         <tr>
@@ -39,12 +40,18 @@
             <td>{{ item[2] }}</td>
             <td>{{ item[3] }}</td>
             <td>{{ item[4] }}</td>
+            <td>
+                <form method="POST" action="/delete" style="margin: 0;">
+                    <input type="hidden" name="product_id" value="{{ item[0] }}">
+                    <button type="submit">Delete</button>
+                </form>
+            </td>
         </tr>
         {% endfor %}
     </table>
 
     <p>
-        <a href="/upload">Upload Inventory</a> |
+        <a href="/upload">Upload Sales</a> |
         <a href="/restock">Restock</a> |
         <a href="/logout">Logout</a>
     </p>
