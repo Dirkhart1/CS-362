@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Confirm Sales Upload</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h2>Confirm Products and Enter Quantity</h2>
+
+    <form method="POST" action="/confirm">
+        <table>
+            <tr>
+                <th>Product Name</th>
+                <th>Date</th>
+                <th>Sales Total</th>
+                <th>Quantity</th>
+            </tr>
+            {% for product in products %}
+            <tr>
+                <td>
+                    {{ product.productname }}
+                    <input type="hidden" name="product_name_{{ loop.index0 }}" value="{{ product.productname }}">
+                </td>
+                <td>{{ product.date }}</td>
+                <td>
+                    {{ product.saleTotal }}
+                    <input type="hidden" name="sale_total_{{ loop.index0 }}" value="{{ product.saleTotal }}">
+                </td>
+                <td><input name="quantity_{{ loop.index0 }}" type="number" min="0" required></td>
+            </tr>
+            {% endfor %}
+        </table>
+        <br>
+        <button type="submit">Add to Inventory</button>
+    </form>
+
+    <p><a href="/upload">Back to Upload</a></p>
+</body>
+</html>
