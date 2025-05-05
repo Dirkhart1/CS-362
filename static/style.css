@@ -59,7 +59,90 @@ th {
 
 /* Links */
 a {
-    text-decoration: none;
+    text-decoration: none;/* Reset some default styles */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Body: full-screen center layout */
+    body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f2f5;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+    
+    /* Container for the form */
+    form {
+        background-color: #ffffff;
+        padding: 30px 40px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        min-width: 320px;
+    }
+    
+    /* Heading */
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #333333;
+    }
+    
+    /* Input fields */
+    input[type="email"],
+    input[type="password"] {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        font-size: 1rem;
+        width: 100%;
+    }
+    
+    /* Submit button */
+    button[type="submit"] {
+        padding: 10px;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    
+    button[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+    
+    /* Flash message */
+    .flash {
+        color: red;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    
+    /* Register link */
+    p {
+        text-align: center;
+        margin-top: 10px;
+    }
+    
+    a {
+        color: #007bff;
+        text-decoration: none;
+    }
+    
+    a:hover {
+        text-decoration : underline;
+    }
+    
     color: #3498db;
 }
 
@@ -72,4 +155,72 @@ a:hover {
     color: red;
     font-weight: bold;
     margin-bottom: 15px;
+}
+/* Apply styles only when inside the .login-page wrapper */
+.login-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f2f5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.login-page .login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    background-color: #fff;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    min-width: 320px;
+}
+
+.login-page form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.login-page input[type="email"],
+.login-page input[type="password"] {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 1rem;
+}
+
+.login-page button[type="submit"] {
+    padding: 10px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.login-page button[type="submit"]:hover {
+    background-color: #0056b3;
+}
+
+.login-page .flash {
+    color: red;
+    text-align: center;
+}
+
+.login-page p {
+    text-align: center;
+}
+
+.login-page a {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.login-page a:hover {
+    text-decoration: underline;
 }
