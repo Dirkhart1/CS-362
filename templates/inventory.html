@@ -5,7 +5,6 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <!-- Grocery Tracker Section -->
     <div class="grocery-tracker">
         Grocery Tracker - Manage your shopping list!
     </div>
@@ -22,7 +21,6 @@
       {% endif %}
     {% endwith %}
 
-    <!-- Form to add a new product -->
     <form method="POST">
         <input name="product_name" placeholder="Product Name" required>
         <input name="quantity" type="number" placeholder="Quantity" required>
@@ -30,8 +28,7 @@
         <button type="submit">Add Product</button>
     </form>
 
-    <!-- Inventory Table -->
-    <table>
+    <table id="inventoryTable">
         <tr>
             <th>Product</th>
             <th>Quantity</th>
@@ -39,11 +36,65 @@
             <th>Last Updated</th>
             <th>Action</th>
         </tr>
+
         {% for item in items %}
         <tr>
             <td>{{ item[1] }}</td>
-            <td>{{ item[2] }}</td>
-            <td>{{ item[3] }}</td>
+
+            <!-- Quantity -->
+            <td style="text-align: center;">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <span>{{ item[2] }}</span>
+                    <div style="display: flex; flex-direction: column; margin-left: 4px;">
+                        <form method="POST" action="/update_quantity" style="margin: 0;">
+                            <input type="hidden" name="product_id" value="{{ item[0] }}">
+                            <input type="hidden" name="direction" value="up">
+                            <button type="submit" style="background: none; border: none; padding: 2px; border-radius: 50%; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#e0e0e0'" onmouseout="this.style.backgroundColor='transparent'">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 14l5-5 5 5H7z"/>
+                                </svg>
+                            </button>
+                        </form>
+                        <form method="POST" action="/update_quantity" style="margin: 0;">
+                            <input type="hidden" name="product_id" value="{{ item[0] }}">
+                            <input type="hidden" name="direction" value="down">
+                            <button type="submit" style="background: none; border: none; padding: 2px; border-radius: 50%; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#e0e0e0'" onmouseout="this.style.backgroundColor='transparent'">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 10l5 5 5-5H7z"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </td>
+
+            <!-- Threshold -->
+            <td style="text-align: center;">
+                <div style="display: flex; align-items: center; justify-content: center;">
+                    <span>{{ item[3] }}</span>
+                    <div style="display: flex; flex-direction: column; margin-left: 4px;">
+                        <form method="POST" action="/update_threshold" style="margin: 0;">
+                            <input type="hidden" name="product_id" value="{{ item[0] }}">
+                            <input type="hidden" name="direction" value="up">
+                            <button type="submit" style="background: none; border: none; padding: 2px; border-radius: 50%; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#e0e0e0'" onmouseout="this.style.backgroundColor='transparent'">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 14l5-5 5 5H7z"/>
+                                </svg>
+                            </button>
+                        </form>
+                        <form method="POST" action="/update_threshold" style="margin: 0;">
+                            <input type="hidden" name="product_id" value="{{ item[0] }}">
+                            <input type="hidden" name="direction" value="down">
+                            <button type="submit" style="background: none; border: none; padding: 2px; border-radius: 50%; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#e0e0e0'" onmouseout="this.style.backgroundColor='transparent'">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7 10l5 5 5-5H7z"/>
+                                </svg>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </td>
+
             <td>{{ item[4] }}</td>
             <td>
                 <form method="POST" action="/delete" style="margin: 0;">
@@ -53,43 +104,26 @@
             </td>
         </tr>
         {% endfor %}
+
+        <tr>
+            <th colspan="5" style="background-color: #e0e0e0; text-align: center;">Product Totals</th>
+        </tr>
+
+        {% for name, total in totals.items() %}
+        <tr style="color: gray; font-style: italic;">
+            <td>{{ name }}</td>
+            <td>{{ total }}</td>
+            <td>--</td>
+            <td>--</td>
+            <td>--</td>
+        </tr>
+        {% endfor %}
     </table>
 
     <p>
         <a href="/upload">Upload Sales</a> |
         <a href="/restock">Restock</a> |
         <a href="/logout">Logout</a>
-    </div>
-
-    <script>
-        let isAscending = true;  // Track the sort order (default is ascending)
-
-        // Sort table by column
-        function sortTable(columnIndex) {
-            const table = document.getElementById("inventoryTable");
-            const rows = Array.from(table.rows).slice(1);  // Skip the header row
-            const isNumericColumn = columnIndex === 1;  // Quantity is numeric
-
-            // Sort the rows based on the column
-            rows.sort((rowA, rowB) => {
-                const cellA = rowA.cells[columnIndex].innerText;
-                const cellB = rowB.cells[columnIndex].innerText;
-
-                if (isNumericColumn) {
-                    return isAscending
-                        ? parseInt(cellA) - parseInt(cellB)  // Ascending (lowest to highest)
-                        : parseInt(cellB) - parseInt(cellA);  // Descending (highest to lowest)
-                } else {
-                    return cellA.localeCompare(cellB);  // Alphabetically (for product names)
-                }
-            });
-
-            // Reorder the rows in the table
-            rows.forEach(row => table.appendChild(row));
-
-            // Toggle the order for the next click
-            isAscending = !isAscending;
-        }
-    </script>
+    </p>
 </body>
 </html>
