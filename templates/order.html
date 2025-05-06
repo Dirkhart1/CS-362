@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Suggested Order</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h2>Suggested Order</h2>
+
+    {% if order %}
+    <table>
+        <tr>
+            <th>Product</th>
+            <th>Quantity to Order</th>
+        </tr>
+        {% for item, qty in order.items() %}
+        <tr>
+            <td>{{ item }}</td>
+            <td>{{ qty }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+    <p>No order needed based on current sales and inventory data.</p>
+    {% endif %}
+
+    <p><a href="/inventory">Back to Inventory</a></p>
+</body>
+</html>

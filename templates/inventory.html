@@ -5,10 +5,6 @@
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-    <div class="grocery-tracker">
-        Grocery Tracker - Manage your shopping list!
-    </div>
-
     <h2>Your Inventory</h2>
 
     {% with messages = get_flashed_messages() %}
@@ -21,80 +17,28 @@
       {% endif %}
     {% endwith %}
 
+    <!-- Form to add a new product -->
     <form method="POST">
         <input name="product_name" placeholder="Product Name" required>
         <input name="quantity" type="number" placeholder="Quantity" required>
-        <input name="threshold" type="number" placeholder="Restock Threshold" required>
+        <input name="sales_total" type="number" placeholder="Sales Total" required>
         <button type="submit">Add Product</button>
     </form>
 
-    <table id="inventoryTable">
+    <!-- Inventory Table -->
+    <table>
         <tr>
             <th>Product</th>
             <th>Quantity</th>
-            <th>Threshold</th>
+            <th>Sales Total</th>
             <th>Last Updated</th>
             <th>Action</th>
         </tr>
-
         {% for item in items %}
         <tr>
             <td>{{ item[1] }}</td>
-
-            <!-- Quantity -->
-            <td style="text-align: center;">
-                <div style="display: flex; align-items: center; justify-content: center;">
-                    <span>{{ item[2] }}</span>
-                    <div style="display: flex; flex-direction: column; margin-left: 4px;">
-                        <form method="POST" action="/update_quantity" style="margin: 0;">
-                            <input type="hidden" name="product_id" value="{{ item[0] }}">
-                            <input type="hidden" name="direction" value="up">
-                            <button type="submit" style="background: none; border: none; padding: 2px; border-radius: 50%; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#e0e0e0'" onmouseout="this.style.backgroundColor='transparent'">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7 14l5-5 5 5H7z"/>
-                                </svg>
-                            </button>
-                        </form>
-                        <form method="POST" action="/update_quantity" style="margin: 0;">
-                            <input type="hidden" name="product_id" value="{{ item[0] }}">
-                            <input type="hidden" name="direction" value="down">
-                            <button type="submit" style="background: none; border: none; padding: 2px; border-radius: 50%; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#e0e0e0'" onmouseout="this.style.backgroundColor='transparent'">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7 10l5 5 5-5H7z"/>
-                                </svg>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </td>
-
-            <!-- Threshold -->
-            <td style="text-align: center;">
-                <div style="display: flex; align-items: center; justify-content: center;">
-                    <span>{{ item[3] }}</span>
-                    <div style="display: flex; flex-direction: column; margin-left: 4px;">
-                        <form method="POST" action="/update_threshold" style="margin: 0;">
-                            <input type="hidden" name="product_id" value="{{ item[0] }}">
-                            <input type="hidden" name="direction" value="up">
-                            <button type="submit" style="background: none; border: none; padding: 2px; border-radius: 50%; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#e0e0e0'" onmouseout="this.style.backgroundColor='transparent'">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7 14l5-5 5 5H7z"/>
-                                </svg>
-                            </button>
-                        </form>
-                        <form method="POST" action="/update_threshold" style="margin: 0;">
-                            <input type="hidden" name="product_id" value="{{ item[0] }}">
-                            <input type="hidden" name="direction" value="down">
-                            <button type="submit" style="background: none; border: none; padding: 2px; border-radius: 50%; transition: background-color 0.2s;" onmouseover="this.style.backgroundColor='#e0e0e0'" onmouseout="this.style.backgroundColor='transparent'">
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="gray" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M7 10l5 5 5-5H7z"/>
-                                </svg>
-                            </button>
-                        </form>
-                    </div>
-                </div>
-            </td>
-
+            <td>{{ item[2] }}</td>
+            <td>{{ item[3] }}</td>
             <td>{{ item[4] }}</td>
             <td>
                 <form method="POST" action="/delete" style="margin: 0;">
@@ -104,25 +48,12 @@
             </td>
         </tr>
         {% endfor %}
-
-        <tr>
-            <th colspan="5" style="background-color: #e0e0e0; text-align: center;">Product Totals</th>
-        </tr>
-
-        {% for name, total in totals.items() %}
-        <tr style="color: gray; font-style: italic;">
-            <td>{{ name }}</td>
-            <td>{{ total }}</td>
-            <td>--</td>
-            <td>--</td>
-            <td>--</td>
-        </tr>
-        {% endfor %}
     </table>
 
     <p>
         <a href="/upload">Upload Sales</a> |
-        <a href="/restock">Restock</a> |
+        <a href="/generate-order">Generate Order</a> |
+        <!--<a href="/restock">Restock</a> |-->
         <a href="/logout">Logout</a>
     </p>
 </body>

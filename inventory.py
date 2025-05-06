@@ -1,15 +1,14 @@
-# inventory.py
 from database import get_db_connection
 from datetime import datetime
 
 # Add a new product for a specific user
-def add_product(user_id, product_name, quantity, threshold):
+def add_product(user_id, product_name, quantity, sales_total):
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('''
-        INSERT INTO inventory (user_id, product_name, quantity, threshold)
-        VALUES (?, ?, ?, ?)
-    ''', (user_id, product_name, quantity, threshold))
+        INSERT INTO inventory (user_id, product_name, quantity, sales_total, last_updated)
+        VALUES (?, ?, ?, ?, ?)
+    ''', (user_id, product_name, quantity, sales_total, datetime.now()))
     conn.commit()
     conn.close()
 
@@ -18,7 +17,7 @@ def get_inventory(user_id):
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('''
-        SELECT id, product_name, quantity, threshold, last_updated
+        SELECT id, product_name, quantity, sales_total, last_updated
         FROM inventory
         WHERE user_id = ?
         ORDER BY product_name
@@ -27,8 +26,8 @@ def get_inventory(user_id):
     conn.close()
     return items
 
-# Update a product's quantity and/or threshold
-def update_product(product_id, user_id, quantity=None, threshold=None):
+# Update a product's quantity or sales_total
+def update_product(product_id, user_id, quantity=None, sales_total=None):
     conn = get_db_connection()
     cur = conn.cursor()
 
@@ -39,12 +38,12 @@ def update_product(product_id, user_id, quantity=None, threshold=None):
             WHERE id = ? AND user_id = ?
         ''', (quantity, datetime.now(), product_id, user_id))
 
-    if threshold is not None:
+    if sales_total is not None:
         cur.execute('''
             UPDATE inventory
-            SET threshold = ?, last_updated = ?
+            SET sales_total = ?, last_updated = ?
             WHERE id = ? AND user_id = ?
-        ''', (threshold, datetime.now(), product_id, user_id))
+        ''', (sales_total, datetime.now(), product_id, user_id))
 
     conn.commit()
     conn.close()
