@@ -1,10 +1,11 @@
 from flask import Flask, render_template, request, redirect, session, flash
 from auth import register_user, login_user, logout_user, is_logged_in, get_current_user
-from inventory import add_product, get_inventory, delete_product
+from inventory import add_product, get_inventory, delete_product, update_product
 from file_handler import allowed_sales_file, process_sales_file
 from restocking import get_low_stock_items, restock_item, alert_user_on_low_stock
 from database import init_db
 from dotenv import load_dotenv
+from collections import defaultdict
 import os
 import json
 import math
@@ -18,7 +19,7 @@ UPLOAD_FOLDER = 'uploads'
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
-# Initialize database
+# Initialize DB
 init_db()
 
 @app.route('/')
@@ -70,7 +71,51 @@ def inventory():
 
     alert_user_on_low_stock(user_id)
     items = get_inventory(user_id)
-    return render_template('inventory.html', items=items)
+
+    # Compute totals
+    totals = defaultdict(int)
+    for item in items:
+        totals[item[1]] += item[2]
+
+    return render_template('inventory.html', items=items, totals=totals)
+
+@app.route('/update_quantity', methods=['POST'])
+def update_quantity():
+    user_id = get_current_user()
+    if not user_id:
+        return redirect('/login')
+
+    product_id = request.form.get('product_id')
+    direction = request.form.get('direction')
+
+    items = get_inventory(user_id)
+    for item in items:
+        if str(item[0]) == product_id:
+            current_quantity = item[2]
+            new_quantity = current_quantity + 1 if direction == 'up' else max(0, current_quantity - 1)
+            update_product(product_id, user_id, quantity=new_quantity)
+            break
+
+    return redirect('/inventory')
+
+@app.route('/update_threshold', methods=['POST'])
+def update_threshold():
+    user_id = get_current_user()
+    if not user_id:
+        return redirect('/login')
+
+    product_id = request.form.get('product_id')
+    direction = request.form.get('direction')
+
+    items = get_inventory(user_id)
+    for item in items:
+        if str(item[0]) == product_id:
+            current_threshold = item[3]
+            new_threshold = current_threshold + 1 if direction == 'up' else max(0, current_threshold - 1)
+            update_product(product_id, user_id, threshold=new_threshold)
+            break
+
+    return redirect('/inventory')
 
 @app.route('/delete', methods=['POST'])
 def delete():
